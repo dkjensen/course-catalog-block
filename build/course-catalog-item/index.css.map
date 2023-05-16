@@ -1,1 +1,0 @@
-{"version":3,"file":"course-catalog-item/index.css","mappings":";;;AAAA;EACC;AACD,C","sources":["webpack://course-catalog-block/./src/course-catalog-item/editor.scss"],"sourcesContent":[".course-catalog-select__input {\n\tbox-shadow: none !important;\n}\n"],"names":[],"sourceRoot":""}
