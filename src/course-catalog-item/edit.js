@@ -9,31 +9,36 @@ import ProductControl from './inspector-controls/product-control';
 export default function Edit(props) {
 	const { attributes, setAttributes } = props;
 
-	const { product, title, creditHours } = attributes;
+	const { product, title, titleSuffix, creditHours } = attributes;
 
 	return (
 		<>
 			<InspectorControls>
 				<PanelBody title={__('Settings')}>
 					<ProductControl value={product} onChange={(val) => setAttributes({ product: val })} />
-					{product && ( 
+					{product && (
 						<>
 							<BaseControl>
-								<ExternalLink href={product.permalink}>{ __( 'View Product' ) }</ExternalLink>
-							</BaseControl> 
-							<TextControl 
-								label={ __( 'Title Text' ) }
-								value={ title }
-								onChange={ ( value ) => setAttributes( { title: value } ) }
+								<ExternalLink href={product.permalink}>{__('View Product')}</ExternalLink>
+							</BaseControl>
+							<TextControl
+								label={__('Title Text')}
+								value={title}
+								onChange={(value) => setAttributes({ title: value })}
 							/>
-							<TextControl 
-								label={ __( 'Credit Hours Text' ) }
-								value={ creditHours }
-								onChange={ ( value ) => setAttributes( { creditHours: value } ) }
-								help={ __( 'Use {x} to dynamically render the number of credit hours' )}
+							<TextControl
+								label={__('After Title Text')}
+								value={titleSuffix}
+								onChange={(value) => setAttributes({ titleSuffix: value })}
+							/>
+							<TextControl
+								label={__('Credit Hours Text')}
+								value={creditHours}
+								onChange={(value) => setAttributes({ creditHours: value })}
+								help={__('Use {x} to dynamically render the number of credit hours')}
 							/>
 						</>
-						
+
 					)}
 				</PanelBody>
 			</InspectorControls>
@@ -42,7 +47,12 @@ export default function Edit(props) {
 			)}
 			{product && (
 				<div {...useBlockProps({ className: 'wp-block-course-catalog-item' })}>
-					<div className="wp-block-course-catalog-item__title"><a href="#">{title ? title : product.label}</a></div>
+					<div className="wp-block-course-catalog-item__title">
+						<a href="#">{title ? title : product.label}</a>
+						{titleSuffix && (
+							<span className="wp-block-course-catalog-item__title-suffix">{titleSuffix}</span>
+						)}
+					</div>
 					<div className="wp-block-course-catalog-item__credits">{creditHours ? creditHours : __('{x} Credit Hours')}</div>
 					<div className="wp-block-course-catalog-item__details"><a href="#">{__('Details')}</a></div>
 					<div className="wp-block-course-catalog-item__price">$xx.xx</div>

@@ -50,18 +50,23 @@ function create_block_course_catalog_item_render( $attributes, $content, $block 
 
 	$attributes = wp_parse_args( $attributes, array(
 		'title'	=> null,
-		'creditHours' => null
+		'titleSuffix' => null,
+		'creditHours' => null,
 	) );
 
 	$credit_hours_num = create_block_get_product_course_hours( absint( $product->get_id() ) );
-
 	$credit_hours_text = preg_replace( '/\{x\}/i', $credit_hours_num, ( $attributes['creditHours'] ?: esc_html__( '{x} Credit Hours', 'course-catalog-block' ) ) );
 
 	ob_start();
 
 	?>
 	<div class="wp-block-course-catalog-item">
-		<div class="wp-block-course-catalog-item__title"><a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $attributes['title'] ?: $product->get_title() ); ?></a></div>
+		<div class="wp-block-course-catalog-item__title">
+			<a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $attributes['title'] ?: $product->get_title() ); ?></a>
+			<?php if ( $attributes['titleSuffix'] ) : ?>
+				<span className="wp-block-course-catalog-item__title-suffix"><?php echo wp_kses_post( $attributes['titleSuffix'] ); ?></span>
+			<?php endif; ?>
+		</div>
 		<div class="wp-block-course-catalog-item__credits"><?php echo wp_kses_post( $credit_hours_text ); ?></div>
 		<div class="wp-block-course-catalog-item__details"><a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php esc_html_e( 'Details', 'course-catalog-block' ); ?></a></div>
 		<div class="wp-block-course-catalog-item__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div>
