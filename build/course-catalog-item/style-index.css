@@ -1,0 +1,100 @@
+/*!***********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/course-catalog-item/style.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************/
+.wp-block-course-catalog-item {
+  display: flex;
+  align-items: normal;
+  flex-wrap: wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  gap: 20px;
+  padding: 10px 28px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #6c6c6c;
+}
+.wp-block-course-catalog-item:nth-child(even) {
+  background-color: #e3edf7;
+}
+@media screen and (min-width: 782px) {
+  .wp-block-course-catalog-item {
+    flex-wrap: nowrap;
+    gap: 24px;
+  }
+}
+@media screen and (max-width: 781px) {
+  .wp-block-course-catalog-item {
+    padding-top: 28px !important;
+    padding-bottom: 28px !important;
+    margin-bottom: 20px !important;
+    border-radius: 12px;
+    border: 1px solid #9d9ea0;
+    text-align: center;
+  }
+}
+.wp-block-course-catalog-item > * {
+  width: 100%;
+  align-self: center;
+  flex-grow: 1;
+  min-width: 0;
+}
+@media screen and (min-width: 782px) {
+  .wp-block-course-catalog-item > * {
+    flex-grow: 0;
+  }
+}
+@media screen and (max-width: 781px) {
+  .wp-block-course-catalog-item > * {
+    flex-basis: 100% !important;
+  }
+}
+@media screen and (max-width: 781px) {
+  .wp-block-course-catalog-item .wp-block-buttons {
+    justify-content: center;
+  }
+}
+@media screen and (min-width: 782px) {
+  .wp-block-course-catalog-item .wp-block-button {
+    margin-bottom: 0 !important;
+  }
+}
+.wp-block-course-catalog-item .wp-block-button .wp-block-button__link {
+  font-weight: 700;
+  padding: 4px 40px;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+.wp-block-course-catalog-item__title {
+  flex-basis: 50%;
+}
+.wp-block-course-catalog-item__title a {
+  color: #005a96;
+  text-decoration: none !important;
+  font-size: 17px;
+  line-height: 24px;
+}
+.wp-block-course-catalog-item__title a:hover {
+  color: #25ae60;
+}
+.wp-block-course-catalog-item__credits {
+  flex-basis: 20%;
+}
+.wp-block-course-catalog-item__details {
+  flex-basis: 8%;
+}
+.wp-block-course-catalog-item__details a {
+  color: #6c6c6c;
+  text-decoration: underline !important;
+}
+.wp-block-course-catalog-item__details a:hover {
+  color: #25ae60;
+}
+.wp-block-course-catalog-item__price {
+  flex-basis: 8%;
+}
+.wp-block-course-catalog-item__cart {
+  flex-basis: 14%;
+}
+
+/*# sourceMappingURL=style-index.css.map*/

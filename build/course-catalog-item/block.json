@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "cloudcatch/course-catalog-item",
+  "version": "0.0.0-development",
+  "title": "Course Catalog Row",
+  "parent": [
+    "cloudcatch/course-catalog"
+  ],
+  "category": "widgets",
+  "icon": "smiley",
+  "attributes": {
+    "product": {
+      "type": "object"
+    },
+    "title": {
+      "type": "string"
+    },
+    "creditHours": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "html": false
+  },
+  "textdomain": "course-catalog-block",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
+}
