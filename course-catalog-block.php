@@ -6,9 +6,9 @@
  * Requires PHP:      7.0
  * Version:           0.0.0-development
  * Author:            CloudCatch LLC
- * License:           GPL-2.0-or-later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * WC tested up to:   3.1
+ * Author URI:		  https://cloudcatch.io
+ * License:           UNLICENSED
+ * WC tested up to:   7.7.0
  * Text Domain:       course-catalog-block
  *
  * @package           create-block
@@ -16,10 +16,8 @@
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
- * Behind the scenes, it registers also all assets so they can be enqueued
- * through the block editor in the corresponding context.
- *
- * @see https://developer.wordpress.org/reference/functions/register_block_type/
+ * 
+ * @return void
  */
 function create_block_course_catalog_block_init() {
 	register_block_type( __DIR__ . '/build/course-catalog' );
@@ -29,7 +27,13 @@ function create_block_course_catalog_block_init() {
 }
 add_action( 'init', 'create_block_course_catalog_block_init' );
 
-function create_block_course_catalog_item_render( $attributes, $content, $block ) {
+/**
+ * Render the course catalog item
+ *
+ * @param array $attributes Block attributes.
+ * @return string
+ */
+function create_block_course_catalog_item_render( $attributes ) {
 	if ( ! function_exists( 'wc_get_product' ) ) {
 		return '';
 	}
@@ -81,24 +85,23 @@ function create_block_course_catalog_item_render( $attributes, $content, $block 
 	return ob_get_clean();
 }
 
-function create_block_course_catalog_block_products() {
-	?>
-
-	<script>
-		var woocommerceCartUrl = '<?php echo esc_url( wc_get_cart_url() ); ?>';
-	</script>
-
-	<?php
-}
-add_action( 'admin_head', 'create_block_course_catalog_block_products' );
-
-
+/**
+ * Register REST routes
+ * 
+ * @return void
+ */
 add_action( 'rest_api_init', function() {
 	register_rest_route( 'bce/v1', '/products', array(
 		'methods'	=> \WP_REST_Server::READABLE,
-		'permission_callback' => '__return_true',
+		'permission_callback' => function() {
+			return current_user_can( 'edit_products' );
+		},
 		'callback' => function() {
 			global $wpdb;
+
+			if ( ! function_exists( 'WC' ) ) {
+				return rest_ensure_response( array() );
+			}
 
 			$terms = array();
 			$states = include WC()->plugin_path() . '/i18n/states.php';
@@ -160,6 +163,12 @@ add_action( 'rest_api_init', function() {
 	) );
 } );
 
+/**
+ * Calculate credit hours for the product
+ *
+ * @param int $product_id Product ID
+ * @return int|float
+ */
 function create_block_get_product_course_hours( int $product_id ) {
     $courses = (array) get_post_meta( $product_id, '_related_course', true );
 

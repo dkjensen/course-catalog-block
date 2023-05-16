@@ -5,7 +5,7 @@
 	"version": "0.0.0-development",
 	"title": "Course Catalog",
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "list-view",
 	"attributes": {
 		"innerBlocks": {
 			"type": "array",

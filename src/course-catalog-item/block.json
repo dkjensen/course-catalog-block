@@ -6,7 +6,7 @@
 	"title": "Course Catalog Row",
 	"parent": ["cloudcatch/course-catalog"],
 	"category": "widgets",
-	"icon": "smiley",
+	"icon": "welcome-learn-more",
 	"attributes": {
 		"product": {
 			"type": "object"
