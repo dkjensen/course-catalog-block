@@ -42,7 +42,7 @@ function create_block_course_catalog_item_render( $attributes ) {
 
 	if ( isset( $attributes['product']['id'] ) ) {
 		$product_id = $attributes['product']['id'];
-	} elseif ( $attributes['product']['value'] ) {
+	} elseif ( isset( $attributes['product']['value'] ) ) {
 		$product_id = $attributes['product']['value'];
 	}
 
@@ -57,6 +57,8 @@ function create_block_course_catalog_item_render( $attributes ) {
 		'titleSuffix' => null,
 		'creditHours' => null,
 	) );
+
+	$cart_url = wc_get_cart_url();
 
 	$credit_hours_num = create_block_get_product_course_hours( absint( $product->get_id() ) );
 	$credit_hours_text = preg_replace( '/\{x\}/i', $credit_hours_num, ( $attributes['creditHours'] ?: esc_html__( '{x} Credit Hours', 'course-catalog-block' ) ) );
@@ -76,7 +78,7 @@ function create_block_course_catalog_item_render( $attributes ) {
 		<div class="wp-block-course-catalog-item__price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div>
 		<div class="wp-block-course-catalog-item__cart">
 			<div class="is-layout-flex wp-block-buttons">
-				<div class="wp-block-button"><a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>" class="wp-block-button__link wp-element-button"><?php esc_html_e( 'Add to cart', 'course-catalog-block' ); ?> &gt;</a></div>
+				<div class="wp-block-button"><a href="<?php echo esc_url( add_query_arg( array( 'add-to-cart' => $product->get_id() ), $cart_url ) ); ?>" class="wp-block-button__link wp-element-button"><?php esc_html_e( 'Add to cart', 'course-catalog-block' ); ?> &gt;</a></div>
 			</div>
 		</div>
 	</div>

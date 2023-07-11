@@ -1,3 +1,5 @@
+import { find as _find } from 'lodash';
+
 import { __ } from '@wordpress/i18n';
 import {
 	PanelBody,
@@ -5,16 +7,34 @@ import {
 	TextControl,
 	BaseControl,
 } from '@wordpress/components';
-import { addQueryArgs } from '@wordpress/url';
+import { useEffect } from '@wordpress/element';
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 
 import './editor.scss';
 import ProductControl from './inspector-controls/product-control';
 
-export default function Edit( props ) {
-	const { attributes, setAttributes } = props;
+import { STORE_NAME } from '../course-catalog/store';
+
+function Edit( props ) {
+	const { attributes, setAttributes, products } = props;
 
 	const { product, title, titleSuffix, creditHours } = attributes;
+
+	useEffect( () => {
+		if ( product?.value && null == product?.label ) {
+			const foundProduct = _find(
+				products,
+				( el ) =>
+					el?.value === product.value || el?.id === product.value
+			);
+
+			if ( foundProduct ) {
+				setAttributes( { product: foundProduct } );
+			}
+		}
+	}, [] );
 
 	return (
 		<>
@@ -22,6 +42,7 @@ export default function Edit( props ) {
 				<PanelBody title={ __( 'Settings' ) }>
 					<ProductControl
 						value={ product }
+						products={ products }
 						onChange={ ( val ) =>
 							setAttributes( { product: val } )
 						}
@@ -113,3 +134,11 @@ export default function Edit( props ) {
 		</>
 	);
 }
+
+export default compose( [
+	withSelect( ( select ) => {
+		return {
+			products: select( STORE_NAME ).getProducts(),
+		};
+	} ),
+] )( Edit );

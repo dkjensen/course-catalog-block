@@ -10,7 +10,7 @@ import Fuse from 'fuse.js';
 
 import { STORE_NAME } from '../../course-catalog/store';
 
-function ProductControl( { value, onChange, products } ) {
+export default function ProductControl( { value, onChange, products } ) {
 	const [ fuse, setFuse ] = useState( null );
 	// const [products, setProducts] = useState([]);
 
@@ -79,11 +79,3 @@ function ProductControl( { value, onChange, products } ) {
 		</BaseControl>
 	);
 }
-
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			products: select( STORE_NAME ).getProducts(),
-		};
-	} ),
-] )( ProductControl );

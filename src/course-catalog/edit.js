@@ -51,7 +51,7 @@ function Edit( props ) {
 	);
 
 	return (
-		<div { ...useBlockProps() }>
+		<div { ...useBlockProps( { className: 'wp-block-course-catalog' } ) }>
 			<div { ...innerBlocksProps } />
 			<RenderAddItemButton />
 		</div>
