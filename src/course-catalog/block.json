@@ -14,7 +14,8 @@
 	},
 	"supports": {
 		"html": false,
-		"anchor": true
+		"anchor": true,
+		"align": ["wide", "full"]
 	},
 	"textdomain": "course-catalog-block",
 	"editorScript": "file:./index.js",
