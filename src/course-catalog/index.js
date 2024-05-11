@@ -13,6 +13,7 @@ import save from './save';
 import transforms from './transforms';
 import metadata from './block.json';
 import './store';
+import './style.scss';
 
 /**
  * Every block starts by registering a new block type definition.

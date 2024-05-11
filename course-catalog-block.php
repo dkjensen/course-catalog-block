@@ -1,14 +1,14 @@
 <?php
 /**
  * Plugin Name:       Course Catalog Block
- * Description:		  Display row of WooCommerce products on the course catalog pages
+ * Description:       Display row of WooCommerce products on the course catalog pages
  * Requires at least: 6.1
  * Requires PHP:      7.0
  * Version:           0.0.0-development
  * Author:            CloudCatch LLC
- * Author URI:		  https://cloudcatch.io
+ * Author URI:        https://cloudcatch.io
  * License:           UNLICENSED
- * WC tested up to:   7.7.0
+ * WC tested up to:   8.8.3
  * Text Domain:       course-catalog-block
  *
  * @package           create-block
@@ -16,14 +16,17 @@
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
- * 
+ *
  * @return void
  */
 function create_block_course_catalog_block_init() {
 	register_block_type( __DIR__ . '/build/course-catalog' );
-	register_block_type( __DIR__ . '/build/course-catalog-item', array(
-		'render_callback'	=> 'create_block_course_catalog_item_render'
-	) );
+	register_block_type(
+		__DIR__ . '/build/course-catalog-item',
+		array(
+			'render_callback' => 'create_block_course_catalog_item_render',
+		)
+	);
 }
 add_action( 'init', 'create_block_course_catalog_block_init' );
 
@@ -52,15 +55,18 @@ function create_block_course_catalog_item_render( $attributes ) {
 		return '';
 	}
 
-	$attributes = wp_parse_args( $attributes, array(
-		'title'	=> null,
-		'titleSuffix' => null,
-		'creditHours' => null,
-	) );
+	$attributes = wp_parse_args(
+		$attributes,
+		array(
+			'title'       => null,
+			'titleSuffix' => null,
+			'creditHours' => null,
+		)
+	);
 
 	$cart_url = wc_get_cart_url();
 
-	$credit_hours_num = create_block_get_product_course_hours( absint( $product->get_id() ) );
+	$credit_hours_num  = create_block_get_product_course_hours( absint( $product->get_id() ) );
 	$credit_hours_text = preg_replace( '/\{x\}/i', $credit_hours_num, ( $attributes['creditHours'] ?: esc_html__( '{x} Credit Hours', 'course-catalog-block' ) ) );
 
 	ob_start();
@@ -70,7 +76,7 @@ function create_block_course_catalog_item_render( $attributes ) {
 		<div class="wp-block-course-catalog-item__title">
 			<a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $attributes['title'] ?: $product->get_title() ); ?></a>
 			<?php if ( $attributes['titleSuffix'] ) : ?>
-				<span className="wp-block-course-catalog-item__title-suffix"><?php echo wp_kses_post( $attributes['titleSuffix'] ); ?></span>
+				<span class="wp-block-course-catalog-item__title-suffix"><?php echo wp_kses_post( $attributes['titleSuffix'] ); ?></span>
 			<?php endif; ?>
 		</div>
 		<div class="wp-block-course-catalog-item__credits"><?php echo wp_kses_post( $credit_hours_text ); ?></div>
@@ -89,31 +95,37 @@ function create_block_course_catalog_item_render( $attributes ) {
 
 /**
  * Register REST routes
- * 
+ *
  * @return void
  */
-add_action( 'rest_api_init', function() {
-	register_rest_route( 'bce/v1', '/products', array(
-		'methods'	=> \WP_REST_Server::READABLE,
-		'permission_callback' => function() {
-			return current_user_can( 'edit_products' );
-		},
-		'callback' => function() {
-			global $wpdb;
+add_action(
+	'rest_api_init',
+	function () {
+		register_rest_route(
+			'bce/v1',
+			'/products',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'permission_callback' => function () {
+					return current_user_can( 'edit_products' );
+				},
+				'callback'            => function () {
+					global $wpdb;
 
-			if ( ! function_exists( 'WC' ) ) {
-				return rest_ensure_response( array() );
-			}
+					if ( ! function_exists( 'WC' ) ) {
+						return rest_ensure_response( array() );
+					}
 
-			$terms = array();
-			$states = include WC()->plugin_path() . '/i18n/states.php';
-			$us_states = $states['US'];
+					$terms = array();
+					$states = include WC()->plugin_path() . '/i18n/states.php';
+					$us_states = $states['US'];
 
-			$products = wp_cache_get( 'bce_products' );
+					$products = wp_cache_get( 'bce_products' );
 
-			if ( false === $products ) {
-				$products = $wpdb->get_results( "
-					SELECT p.ID, p.post_title, GROUP_CONCAT( 
+					if ( false === $products ) {
+						$products = $wpdb->get_results(
+							"
+					SELECT p.ID, p.post_title, GROUP_CONCAT(
 						tr.term_taxonomy_id
 						SEPARATOR ','
 					) as categories
@@ -121,49 +133,55 @@ add_action( 'rest_api_init', function() {
 					LEFT JOIN {$wpdb->term_relationships} tr
 						ON object_id = p.ID
 					WHERE post_type = 'product'
-					GROUP BY p.ID	
-				" );
+					GROUP BY p.ID
+				"
+						);
 
-				wp_cache_set( 'bce_products', $products );
-			}
+						wp_cache_set( 'bce_products', $products );
+					}
 
-			$_products = array();
+					$_products = array();
 
-			if ( $products ) {
-				foreach ( $products as $product ) {
-					$categories = [];
-					$category_ids = array_map( 'intval', explode( ',', $product->categories ) );
+					if ( $products ) {
+						foreach ( $products as $product ) {
+							$categories = array();
+							$category_ids = array_map( 'intval', explode( ',', $product->categories ) );
 
-					foreach ( $category_ids as $category ) {
-						if ( array_key_exists( $category, $terms ) ) {
-							$categories[] = $terms[ $category ];
-						} else {
-							$term = get_term( $category, 'product_cat' );
+							foreach ( $category_ids as $category ) {
+								if ( array_key_exists( $category, $terms ) ) {
+									$categories[] = $terms[ $category ];
+								} else {
+									$term = get_term( $category, 'product_cat' );
 
-							$terms[ $category ] = $term->name ?? null;
-							$categories[] = $terms[ $category ];
+									$terms[ $category ] = $term->name ?? null;
+									$categories[] = $terms[ $category ];
+								}
+							}
+
+							$state_category = (array) array_filter(
+								$categories,
+								function ( $category ) use ( $us_states ) {
+									return in_array( $category, $us_states );
+								}
+							);
+
+							$_product = array();
+
+							$_product['label'] = $product->post_title . ( $state_category ? ' ( ' . implode( ', ', $state_category ) . ' )' : '' );
+							$_product['permalink'] = add_query_arg( array( 'p' => $product->ID ), home_url() );
+							$_product['category_names'] = $categories;
+							$_product['value'] = $product->ID;
+
+							$_products[] = $_product;
 						}
 					}
 
-					$state_category = (array) array_filter( $categories, function( $category ) use ( $us_states ) {
-						return in_array( $category, $us_states );
-					} );
-
-					$_product = [];
-
-					$_product['label'] = $product->post_title . ( $state_category ? ' ( ' . implode( ', ', $state_category ) . ' )' : '' );
-					$_product['permalink'] = add_query_arg( array( 'p' => $product->ID ), home_url() );
-					$_product['category_names'] = $categories;
-					$_product['value'] = $product->ID;
-
-					$_products[] = $_product;
-				}
-			}
-
-			return rest_ensure_response( $_products );
-		}
-	) );
-} );
+					return rest_ensure_response( $_products );
+				},
+			)
+		);
+	}
+);
 
 /**
  * Calculate credit hours for the product
@@ -172,28 +190,31 @@ add_action( 'rest_api_init', function() {
  * @return int|float
  */
 function create_block_get_product_course_hours( int $product_id ) {
-    $courses = (array) get_post_meta( $product_id, '_related_course', true );
+	$courses = (array) get_post_meta( $product_id, '_related_course', true );
 
 	$hours = 0;
 
-    if ( ! empty( $courses ) ) {
-        foreach( $courses as $course ) {
-            $course_meta = get_post_meta( $course, '_sfwd-courses', true );
+	if ( ! empty( $courses ) ) {
+		foreach ( $courses as $course ) {
+			$course_meta = get_post_meta( $course, '_sfwd-courses', true );
 
-            if( is_array( $course_meta ) && ! empty( $course_meta['sfwd-courses_credit_hours'] ) ) {
-                $hours += (float) $course_meta['sfwd-courses_credit_hours'];
-            }
-        }
-    }
+			if ( is_array( $course_meta ) && ! empty( $course_meta['sfwd-courses_credit_hours'] ) ) {
+				$hours += (float) $course_meta['sfwd-courses_credit_hours'];
+			}
+		}
+	}
 
-    return $hours;
+	return $hours;
 }
 
 /**
  * Declare compatibility with WooCommerce Custom Order Tables
  */
-add_action( 'before_woocommerce_init', function() {
-	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+add_action(
+	'before_woocommerce_init',
+	function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
 	}
-} );
+);

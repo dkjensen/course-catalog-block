@@ -1,3 +1,7 @@
-.wp-block-course-catalog__items {
-	
+.wp-block-course-catalog {
+
+	& &__items {
+		max-width: 1340px;
+		font-size: 14px;
+	}
 }

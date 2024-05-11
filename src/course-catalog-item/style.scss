@@ -1,3 +1,36 @@
-.wp-block-course-catalog-item {
-	
+.wp-block-course-catalog {
+
+	& &-item {
+		font-size: 14px;
+		padding: 6px 0;
+
+		&__title {
+			flex-basis: 30%;
+
+			&-suffix {
+				display: block;
+			}
+		}
+
+		&__credits {
+			flex-basis: 25%;
+		}
+
+		&__details {
+			flex-basis: 10%;
+		}
+
+		&__price {
+			flex-basis: 10%;
+		}
+
+		&__cart {
+			flex-basis: 12%
+		}
+
+		.wp-block-button .wp-block-button__link {
+			font-size: 13px !important;
+			padding: 10px 20px !important;
+		}
+	}
 }
